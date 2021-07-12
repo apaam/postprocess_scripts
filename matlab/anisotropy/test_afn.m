@@ -5,18 +5,15 @@ out_dir = 'result_figs/';
 out_fig = 0;
 
 % - import dem data
-in_dir = 'result_data/monotonic_size/case_testing_0p00/post/';
-file_list = dir([in_dir,'fc*.dump']);
-in_file = [in_dir,file_list(1).name];
-tmp_data = importdata(in_file,' ',9);
+in_dir = 'data/netdem/';
+file_name = 'contact/contact_000_000000000400000.vtk';
+vtk_data = myvtk_read([in_dir,file_name]);
 
-cnt_orien = tmp_data.data(:,1:3)-tmp_data.data(:,4:6);
-cnt_orien_norm = sqrt(sum(cnt_orien.*cnt_orien,2));
-cnt_orien = cnt_orien./cnt_orien_norm;
+cnt_orien = vtk_data.dir_n;
 
-fc = tmp_data.data(:,7:9);
-fn = tmp_data.data(:,10:12);
-ft = tmp_data.data(:,13:15);
+fc = vtk_data.force;
+fn = sum(vtk_data.force.*vtk_data.dir_n,2).*vtk_data.dir_n;
+ft = vtk_data.force-fn;
 
 fc_mag = sqrt(sum(fc.*fc,2));
 fn_mag = sqrt(sum(fn.*fn,2));
